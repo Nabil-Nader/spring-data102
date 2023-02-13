@@ -5,11 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @ToString
 @Getter
 @Setter
-@Entity(name = "students")
+@Entity(name = "student")
 // we should use from javax,because if we want to change from break  to different provider nothing will change
 
 /*
@@ -26,7 +28,7 @@ It helps in mapping Java data types to SQL data types.
 It is the contributor of JPA.
  */
 
-@Table(name = "students",
+@Table(name = "student",
 
 uniqueConstraints = {
         @UniqueConstraint(name = "student_email_unique",columnNames = "email")
@@ -54,11 +56,32 @@ public class Student {
 
     private Integer age;
 
+//    @ManyToOne
+//    @JoinColumn(name = "book_id",
+//            referencedColumnName = "id",
+//            foreignKey = @ForeignKey(name = "book_id_fk")
+//    )
+//    private List<Book> books;
+//
+//    public void addBooks(Book book){
+//        books.add(book);
+//    }
+
 //    @OneToOne(
 //            mappedBy = "student",
 //            orphanRemoval = true
 //    )
 //    private StudentCard studentCard; // student card is the owning entity
+
+
+    @OneToMany(
+            mappedBy = "student",
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
+    )
+    private List<Book> books = new ArrayList<>();
+
 
     public Student(String firstName, String lastName, String email, Integer age) {
         this.firstName = firstName;
@@ -77,4 +100,12 @@ If you are using MySQL, which doesn't support database sequence objects, then Hi
 
 So, don't use the GenerationType.SEQUENCE strategy with MySQL.
      */
+
+    public void addBook(Book book) {
+        if (!this.books.contains(book)) {
+            this.books.add(book);
+            book.setStudent(this);
+        }
+    }
+
 }
