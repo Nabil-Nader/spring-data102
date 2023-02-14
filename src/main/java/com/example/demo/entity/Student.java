@@ -30,9 +30,9 @@ It is the contributor of JPA.
 
 @Table(name = "student",
 
-uniqueConstraints = {
-        @UniqueConstraint(name = "student_email_unique",columnNames = "email")
-}
+        uniqueConstraints = {
+                @UniqueConstraint(name = "student_email_unique", columnNames = "email")
+        }
 )
 public class Student {
 
@@ -45,13 +45,13 @@ public class Student {
             generator = "student_sequence")
     private Long id;
 
-    @Column(columnDefinition = "text ",nullable = false)
+    @Column(columnDefinition = "text ", nullable = false)
     private String firstName;
 
-    @Column(columnDefinition = "text ",nullable = false)
+    @Column(columnDefinition = "text ", nullable = false)
     private String lastName;
 
-    @Column(columnDefinition = "text ",nullable = false)
+    @Column(columnDefinition = "text ", nullable = false)
     private String email;
 
     private Integer age;
@@ -73,6 +73,26 @@ public class Student {
 //    )
 //    private StudentCard studentCard; // student card is the owning entity
 
+
+    @ManyToMany(
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
+    )
+    // this annotation will create our new table in DB
+    @JoinTable(
+            name = "enrolment",
+            joinColumns = @JoinColumn(
+                    name = "student_id",
+                    foreignKey = @ForeignKey(name = "enrolment_student_id_fk")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "course_id",
+                    foreignKey = @ForeignKey(name = "enrolment_course_id_fk")
+
+            )
+
+    )
+    private List<Course> courses = new ArrayList();
 
     @OneToMany(
             mappedBy = "student",

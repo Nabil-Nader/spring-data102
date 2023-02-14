@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Table(name = "book")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Book {
 
     @Id
@@ -34,6 +36,11 @@ public class Book {
 
     private String bookName;
 
+    @Column(
+            name = "created_at",
+            nullable = false,
+            columnDefinition = "TIMESTAMP WITHOUT TIME ZONE"
+    )
     private LocalDate createAt;
 
     public Book(String bookName) {
